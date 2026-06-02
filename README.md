@@ -1,13 +1,78 @@
+Инструкция
+Шаг 1. Создай новый проект
+Visual Studio → Файл → Создать → Проект
+
+Выбери Windows Forms App (.NET Framework)
+
+Назови DemoExamen
+
+Нажми Создать
+
+Шаг 2. Замени весь код в Form1.cs
+Скопируй этот код и вставь вместо всего, что есть в Form1.cs:
+
+csharp
 using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 
 namespace DemoExamen
 {
-    public partial class FormLogin : Form
+    public partial class Form1 : Form
     {
-        public FormLogin()
+        private TextBox txtLogin;
+        private TextBox txtPassword;
+        private Button btnLogin;
+        private Dictionary<string, User> users = new Dictionary<string, User>();
+
+        public Form1()
         {
-            InitializeComponent();
+            CreateControls();
+            LoadUsers();
+        }
+
+        private void CreateControls()
+        {
+            this.Text = "Авторизация";
+            this.Size = new System.Drawing.Size(300, 200);
+            this.StartPosition = FormStartPosition.CenterScreen;
+
+            Label lblLogin = new Label();
+            lblLogin.Text = "Логин:";
+            lblLogin.Location = new System.Drawing.Point(20, 20);
+            lblLogin.Size = new System.Drawing.Size(80, 25);
+
+            txtLogin = new TextBox();
+            txtLogin.Location = new System.Drawing.Point(100, 20);
+            txtLogin.Size = new System.Drawing.Size(150, 25);
+
+            Label lblPassword = new Label();
+            lblPassword.Text = "Пароль:";
+            lblPassword.Location = new System.Drawing.Point(20, 55);
+            lblPassword.Size = new System.Drawing.Size(80, 25);
+
+            txtPassword = new TextBox();
+            txtPassword.Location = new System.Drawing.Point(100, 55);
+            txtPassword.Size = new System.Drawing.Size(150, 25);
+            txtPassword.PasswordChar = '*';
+
+            btnLogin = new Button();
+            btnLogin.Text = "Войти";
+            btnLogin.Location = new System.Drawing.Point(100, 95);
+            btnLogin.Size = new System.Drawing.Size(100, 35);
+            btnLogin.Click += btnLogin_Click;
+
+            this.Controls.Add(lblLogin);
+            this.Controls.Add(txtLogin);
+            this.Controls.Add(lblPassword);
+            this.Controls.Add(txtPassword);
+            this.Controls.Add(btnLogin);
+        }
+
+        private void LoadUsers()
+        {
+            users.Add("admin", new User { Password = "123", Role = "Администратор" });
+            users.Add("user1", new User { Password = "123", Role = "Пользователь" });
         }
 
         private void btnLogin_Click(object sender, EventArgs e)
@@ -21,9 +86,10 @@ namespace DemoExamen
                 return;
             }
 
-            if (login == "admin" && password == "123")
+            if (users.ContainsKey(login) && users[login].Password == password)
             {
-                MessageBox.Show("Вы успешно авторизовались");
+                string role = users[login].Role;
+                MessageBox.Show($"Вы успешно авторизовались\nВаша роль: {role}");
             }
             else
             {
@@ -31,8 +97,50 @@ namespace DemoExamen
                 txtPassword.Clear();
             }
         }
+
+        private class User
+        {
+            public string Password { get; set; }
+            public string Role { get; set; }
+        }
     }
 }
+Шаг 3. Замени код в Program.cs
+Открой Program.cs и замени на это:
+
+csharp
+using System;
+using System.Windows.Forms;
+
+namespace DemoExamen
+{
+    internal static class Program
+    {
+        [STAThread]
+        static void Main()
+        {
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(new Form1());
+        }
+    }
+}
+Шаг 4. Запусти (F5)
+Всё работает. Ничего перетаскивать не нужно.
+
+Плюсы этого способа
+Не нужно искать панель инструментов
+
+Не нужно настраивать свойства вручную
+
+Весь код в одном месте
+
+Работает сразу после запуска
+
+
+
+
+
 
 
 
